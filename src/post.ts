@@ -8,16 +8,13 @@ import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass.js';
 export class Post {
   composer: EffectComposer;
   gtao: GTAOPass;
-  private renderPass: RenderPass;
-  private output: OutputPass;
   aoEnabled = true;
 
   constructor(private renderer: THREE.WebGLRenderer, scene: THREE.Scene, camera: THREE.PerspectiveCamera) {
     const size = renderer.getSize(new THREE.Vector2());
     const rt = new THREE.WebGLRenderTarget(size.x, size.y, { type: THREE.HalfFloatType });
     this.composer = new EffectComposer(renderer, rt);
-    this.renderPass = new RenderPass(scene, camera);
-    this.composer.addPass(this.renderPass);
+    this.composer.addPass(new RenderPass(scene, camera));
 
     this.gtao = new GTAOPass(scene, camera, size.x, size.y);
     this.gtao.output = GTAOPass.OUTPUT.Default;
@@ -40,15 +37,9 @@ export class Post {
       });
     };
     this.composer.addPass(this.gtao);
-    this.output = new OutputPass();
-    this.composer.addPass(this.output);
+    this.composer.addPass(new OutputPass());
     // Smooth the final image without multisampling every HDR render target as well.
     this.composer.addPass(new SMAAPass());
-  }
-
-  setCamera(camera: THREE.PerspectiveCamera) {
-    this.renderPass.camera = camera;
-    this.gtao.camera = camera;
   }
 
   setAO(on: boolean) {

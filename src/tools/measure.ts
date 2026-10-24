@@ -64,6 +64,7 @@ export class MeasureTool {
     const g = new LineGeometry();
     g.setPositions([0, 0, 0, 0, 0, 0]);
     this.preview = new Line2(g, this.prevMat);
+    this.preview.computeLineDistances();
     this.preview.renderOrder = 999;
     this.preview.visible = false;
     this.group.add(this.preview);
@@ -111,6 +112,7 @@ export class MeasureTool {
     const m = this.list.pop();
     if (!m) return;
     this.group.remove(m.line, m.label, ...m.ends);
+    m.line.geometry.dispose();
     m.label.element.remove();
     this.onChange?.();
   }
@@ -189,8 +191,18 @@ export class MeasureTool {
     const s = THREE.MathUtils.clamp(this.camera.position.distanceTo(p) * 0.006, 0.008, 0.12);
     this.cursor.scale.setScalar(s);
     if (this.start) {
-      (this.preview.geometry as LineGeometry).setPositions([this.start.x, this.start.y, this.start.z, p.x, p.y, p.z]);
-      this.preview.computeLineDistances();
+      // Reuse GPU buffers while the pointer moves, including the dashed-line distances.
+      const g = this.preview.geometry;
+      const start = g.getAttribute('instanceStart') as THREE.InterleavedBufferAttribute;
+      const end = g.getAttribute('instanceEnd') as THREE.InterleavedBufferAttribute;
+      start.setXYZ(0, this.start.x, this.start.y, this.start.z);
+      end.setXYZ(0, p.x, p.y, p.z);
+      start.data.needsUpdate = true;
+      const distance = g.getAttribute('instanceDistanceEnd') as THREE.InterleavedBufferAttribute;
+      distance.setX(0, this.start.distanceTo(p));
+      distance.data.needsUpdate = true;
+      g.computeBoundingBox();
+      g.computeBoundingSphere();
       this.preview.visible = true;
       this.previewLabel.position.copy(this.start).lerp(p, 0.5);
       this.previewLabel.element.querySelector('.v')!.textContent = fmtLen(this.start.distanceTo(p), this.units);

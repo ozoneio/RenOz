@@ -211,21 +211,6 @@ function shoeCabinet(kit: Kit, w: number) {
   kit.box(w / 2 - 0.4, w / 2 - 0.15, y1, y1 + 0.02, -0.08, 0.08, OAK_D); // key tray
 }
 
-/** low sideboard on slim legs; back at local −z */
-function sideboard(kit: Kit, w: number, d = 0.45, h = 0.78) {
-  for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
-    const x = sx * (w / 2 - 0.06), z = sz * (d / 2 - 0.06);
-    kit.box(x - 0.02, x + 0.02, 0, 0.18, z - 0.02, z + 0.02, OAK_D);
-  }
-  kit.box(-w / 2, w / 2, 0.18, h, -d / 2, d / 2, OAK);
-  doorFronts(kit, w, 0.19, h - 0.01, d / 2, 4, [0.3, 0.5]);
-  // paper table lamp
-  kit.box(-w / 2 + 0.2, -w / 2 + 0.34, h, h + 0.03, -0.07, 0.07, OAK_D);
-  kit.rod(V(-w / 2 + 0.27, h + 0.03, 0), V(-w / 2 + 0.27, h + 0.2, 0), 0.008, OAK_D, 6);
-  geom(kit, new THREE.CylinderGeometry(0.13, 0.15, 0.24, 24), WASHI, -w / 2 + 0.27, h + 0.32, 0);
-  lamp(kit, -w / 2 + 0.27, h + 0.35, 0.25, 0.8, { distance: 4 });
-}
-
 /** paper floor lamp (andon) with a light inside */
 function andon(kit: Kit, h = 0.62, intensity = 0.9) {
   for (const x of [-0.14, 0.14]) for (const z of [-0.14, 0.14]) kit.box(x - 0.012, x + 0.012, 0, h, z - 0.012, z + 0.012, OAK_D);
@@ -481,12 +466,6 @@ function ceilingFan(kit: Kit, x: number, z: number, yCeil: number, light: number
   }
   geom(kit, new THREE.SphereGeometry(0.16, 28, 12, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), WASHI, x, yCeil - 0.33, z, 0.55);
   lamp(kit, x, yCeil - 0.45, z, light);
-}
-
-/** vertical oak slats on a dark backing, on a wall face at z (slats towards +z) */
-function slatWallZ(kit: Kit, x0: number, x1: number, z: number, y0: number, y1: number) {
-  kit.box(x0, x1, y0, y1, z, z + 0.012, OAK_D);
-  for (let x = x0 + 0.015; x + 0.035 <= x1 - 0.01; x += 0.07) kit.box(x, x + 0.035, y0, y1, z + 0.012, z + 0.042, OAK);
 }
 
 /* ------------------------------------------------------------------ */

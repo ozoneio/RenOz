@@ -299,10 +299,6 @@ export class Kit {
     g.dispose();
   }
 
-  groups(): string[] {
-    return [...this.buckets.keys()];
-  }
-
   build(getMat: (key: string) => THREE.Material, castShadow: (key: string) => boolean): Map<string, THREE.Group> {
     const out = new Map<string, THREE.Group>();
     for (const [gname, mats] of this.buckets) {

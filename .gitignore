@@ -5,6 +5,7 @@ node_modules/
 dist/
 .vite/
 coverage/
+.temp/
 
 # Local environment files
 .env

@@ -385,33 +385,8 @@ export function plasterTexture(px = 512, seed = 5, strength = 0.9): TexSet {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Text on canvas (house number plate, labels)                        */
+/*  Canvas textures                                                    */
 /* ------------------------------------------------------------------ */
-
-export function textCanvas(lines: { text: string; size: number; weight?: string; color?: string }[], opts: { w: number; h: number; bg?: string; radius?: number; pad?: number; align?: CanvasTextAlign }) {
-  const c = document.createElement('canvas');
-  c.width = opts.w;
-  c.height = opts.h;
-  const ctx = c.getContext('2d')!;
-  if (opts.bg) {
-    ctx.fillStyle = opts.bg;
-    const r = opts.radius ?? 0;
-    ctx.beginPath();
-    ctx.roundRect(0, 0, opts.w, opts.h, r);
-    ctx.fill();
-  }
-  const total = lines.reduce((a, l) => a + l.size * 1.25, 0);
-  let y = (opts.h - total) / 2;
-  ctx.textAlign = opts.align ?? 'center';
-  ctx.textBaseline = 'top';
-  for (const l of lines) {
-    ctx.font = `${l.weight ?? '600'} ${l.size}px "Segoe UI", Roboto, Helvetica, Arial, sans-serif`;
-    ctx.fillStyle = l.color ?? '#222';
-    ctx.fillText(l.text, opts.align === 'left' ? (opts.pad ?? 10) : opts.w / 2, y + l.size * 0.1);
-    y += l.size * 1.25;
-  }
-  return c;
-}
 
 export function canvasToTexture(c: HTMLCanvasElement, srgb = true) {
   const t = new THREE.CanvasTexture(c);
